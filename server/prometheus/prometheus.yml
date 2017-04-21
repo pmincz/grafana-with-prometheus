@@ -1,0 +1,108 @@
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+      monitor: 'docker-host-alpha'
+
+# Load and evaluate rules in this file every 'evaluation_interval' seconds.
+rule_files:
+  - "targets.rules"
+  - "host.rules"
+  - "containers.rules"
+
+# A scrape configuration containing exactly one endpoint to scrape.
+scrape_configs:
+  - job_name: 'nodeexporter'
+    scrape_interval: 15s
+    ec2_sd_configs:
+      - region: us-east-1
+        port: 9100
+        refresh_interval: 60s
+        profile: list-instances
+    relabel_configs:
+        # Only monitor instances which have a tag called Monitoring "Monitoring" with value App
+      - source_labels: [__meta_ec2_tag_Monitoring]
+        regex: App
+        action: keep
+        # add the tag name to a field name
+      - source_labels: [__meta_ec2_tag_Name]
+        target_label: name
+        action: replace
+        # add the tag hostname without the port
+      - source_labels: [__address__]
+        separator: ':'
+        regex: '(.*):(.*)'
+        target_label: hostname
+        replacement: '${1}'
+        # add the tag source with the value application
+      - source_labels: []
+        target_label: source
+        replacement: application
+
+  # repeat the same configuration but change the port, the tag and the source for elasticsearch, mongodb, ...
+  # for exaple
+  - job_name: 'memcached'
+    scrape_interval: 15s
+    ec2_sd_configs:
+      - region: us-east-1
+        port: 9150
+        refresh_interval: 60s
+        profile: list-instances
+    relabel_configs:
+        # Only monitor instances which have a tag called Monitoring "Monitoring" with value Memcached
+      - source_labels: [__meta_ec2_tag_Monitoring]
+        regex: Memcached
+        action: keep
+        # add the tag name to a field name
+      - source_labels: [__meta_ec2_tag_Name]
+        target_label: name
+        action: replace
+        # add the tag hostname without the port
+      - source_labels: [__address__]
+        separator: ':'
+        regex: '(.*):(.*)'
+        target_label: hostname
+        replacement: '${1}'
+        # add the tag source with the value application
+      - source_labels: []
+        target_label: source
+        replacement: memcached
+  
+
+  - job_name: 'cadvisor'
+    scrape_interval: 15s
+    ec2_sd_configs:
+      - region: us-east-1
+        port: 8080
+        refresh_interval: 60s
+        profile: ec2-list-instances
+    relabel_configs:
+        # Only monitor instances which have a tag called Monitoring "Monitoring" and value Docker
+      - source_labels: [__meta_ec2_tag_Monitoring]
+        regex: Docker
+        action: keep
+      - source_labels: [__meta_ec2_tag_Name]
+        target_label: name
+        action: replace
+      - source_labels: [__address__]
+        separator: ':'
+        regex: '(.*):(.*)'
+        target_label: hostname
+        replacement: '${1}'
+      - source_labels: []
+        target_label: source
+        replacement: application
+    # To remove metrics from the containers that run in the hosts to report the metrics like cadvisor and node_exporter
+    metric_relabel_configs:
+      - source_labels: [exported_name]
+        regex: cadvisor
+        action: drop
+      - source_labels: [exported_name]
+        regex: node_exporter
+        action: drop
+      - source_labels: [exported_name]
+        regex:
+        action: drop

@@ -1,0 +1,24 @@
+#Install docker
+sudo yum install docker
+
+#Install docker-compose
+sudo pip install docker-compose
+
+#Give permissions to the user
+sudo usermod -aG docker ${USER}
+
+#Install git
+sudo yum install git
+
+#Clone repo
+
+#run docker-compose in the main folder
+docker-compose up -d
+
+#enter to grafana with user: admin and password: admin
+
+#configure datasource to Prometheus
+#url: http://prometheus:9090
+#access: proxy
+
+#import dashboard from grafana directory
