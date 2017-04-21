@@ -1,5 +1,11 @@
 # grafana-with-prometheus
-Grafana with Prometheus, Node Exporter and Cadvisor metrics
+Grafana with Prometheus, Node Exporter and Cadvisor metrics with ec2_discovery
+
+## Node Exporter -> Host Metrics
+## Cadvisor -> Docker Container Metrics
+## Memcached Metrics
+## MongoDB Metrics
+## Elasticsearch Metrics
 
 ## Server configuration
 ### Install docker
@@ -24,16 +30,16 @@ Grafana with Prometheus, Node Exporter and Cadvisor metrics
 -	http://<ip>:80
 
 ### Configure datasource to Prometheus
--	####url: http://prometheus:9090
--	####access: proxy
+-	url: http://prometheus:9090
+-	access: proxy
 
 ### import dashboard from grafana directory
 
 ## Client configuration
-###Install docker
+### Install docker
 -	sudo yum install docker
 
-###if is not running
+### if is not running
 -	sudo service docker start
 
 ### Node_exporter to take host metrics
