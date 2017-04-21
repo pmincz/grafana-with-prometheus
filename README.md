@@ -1,11 +1,11 @@
 # grafana-with-prometheus
 Grafana with Prometheus, Node Exporter and Cadvisor metrics with ec2_discovery
 
-## Node Exporter -> Host Metrics
-## Cadvisor -> Docker Container Metrics
-## Memcached Metrics
-## MongoDB Metrics
-## Elasticsearch Metrics
+#### Node Exporter -> Host Metrics
+#### Cadvisor -> Docker Container Metrics
+#### Memcached Metrics
+#### MongoDB Metrics
+#### Elasticsearch Metrics
 
 ## Server configuration
 ### Install docker
